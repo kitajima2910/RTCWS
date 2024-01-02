@@ -58,6 +58,7 @@
         // console.log(`Received message from server: ${message}`);
 
         // Reset txtAccept trước khi thêm
+        txtAccept.value = "";
         txtAccept.value = message;
       }
 
@@ -125,7 +126,7 @@
         });
     }
 
-  }, 1000);
+  }, 500);
 
   // Send msg
   document.getElementById("send").addEventListener("click", (e) => {
