@@ -40,7 +40,7 @@
   const txtCreate = document.getElementById("txtCreate");
 
   // WebSocket
-  const socket = new WebSocket('ws://localhost:6969'); // Thay đổi URL nếu cần
+  const socket = new WebSocket('wss://gl-rtcws.glitch.me/'); // Thay đổi URL nếu cần
 
   // Xử lý khi kết nối được mở
   socket.addEventListener('open', (event) => {
@@ -58,7 +58,6 @@
         // console.log(`Received message from server: ${message}`);
 
         // Reset txtAccept trước khi thêm
-        txtAccept.value = "";
         txtAccept.value = message;
       }
 
@@ -126,7 +125,7 @@
         });
     }
 
-  }, 500);
+  }, 1000);
 
   // Send msg
   document.getElementById("send").addEventListener("click", (e) => {
