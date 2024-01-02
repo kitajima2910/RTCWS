@@ -1,28 +1,52 @@
-const WebSocket = require('ws');
+const HTTPS_PORT = 6969;
 
-const server = new WebSocket.Server({ port: 6969 });
+
+const fs = require('fs');
+const express = require('express');
+const https = require('https');
+const WebSocket = require('ws');
+const WebSocketServer = WebSocket.Server;
+
+
+
+
+const serverConfig = {
+  key: fs.readFileSync('key.pem'),
+  cert: fs.readFileSync('cert.pem')
+};
+
+const app = express();
+app.use(express.static('client-datachannel'));
+
+const httpsServer = https.createServer(serverConfig, app);
+httpsServer.listen(HTTPS_PORT, '0.0.0.0');
+
+
+
+
+const wss = new WebSocketServer({ server: httpsServer });
 
 // Khởi tạo biến nhận data từ local
 let dataLocal = "";
 let dataRemote = "";
 
 // Khi có một kết nối mới
-server.on('connection', (socket) => {
+wss.on('connection', (ws) => {
   console.log('Client connected');
 
   // Gửi dữ liệu cho client sau mỗi giây
   const interval = setInterval(() => {
     if (dataLocal !== "") {
-      socket.send(JSON.stringify(dataLocal));
+      ws.send(JSON.stringify(dataLocal));
     }
 
     if (dataRemote !== "") {
-      socket.send(JSON.stringify(dataRemote));
+      ws.send(JSON.stringify(dataRemote));
     }
   }, 500);
 
   // Khi nhận được dữ liệu từ client
-  socket.on('message', (data) => {
+  ws.on('message', (data) => {
 
     // Kiểm tra data có phải là object hay không
     console.log(`Received data from client: ${data}`);
@@ -47,9 +71,11 @@ server.on('connection', (socket) => {
   }
 
   // Khi client đóng kết nối
-  socket.on('close', () => {
-    console.log('Client disconnected');
-    clearInterval(interval);
-  });
+  console.log('Server running. Visit https://localhost:' + HTTPS_PORT + ' in Firefox/Chrome.\n\n\
+  Some important notes:\n\
+    * Note the HTTPS; there is no HTTP -> HTTPS redirect.\n\
+    * You\'ll also need to accept the invalid TLS certificate.\n\
+    * Some browsers or OSs may not allow the webcam to be used by multiple pages at once. You may need to use two different browsers or machines.\n'
+  );
 
 });
