@@ -19,7 +19,7 @@ const app = express();
 app.use(express.static('client-datachannel'));
 
 const httpsServer = https.createServer(serverConfig, app);
-httpsServer.listen(HTTPS_PORT, '0.0.0.0');
+httpsServer.listen(HTTPS_PORT, () => console.log(`Https running on port ${HTTPS_PORT}`));
 
 
 
