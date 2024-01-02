@@ -40,7 +40,7 @@
   const txtCreate = document.getElementById("txtCreate");
 
   // WebSocket
-  const socket = new WebSocket('ws://localhost:6969'); // Thay đổi URL nếu cần
+  const socket = new WebSocket('wss://localhost:6969'); // Thay đổi URL nếu cần
 
   // Xử lý khi kết nối được mở
   socket.addEventListener('open', (event) => {
