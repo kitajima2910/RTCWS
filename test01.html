@@ -40,7 +40,11 @@
   const txtCreate = document.getElementById("txtCreate");
 
   // WebSocket
-  const socket = new WebSocket('wss://gl-rtcws.glitch.me/'); // Thay đổi URL nếu cần
+  const socket = new WebSocket('wss://gl-rtcws.glitch.me/', {
+    headers: {
+      "user-agent": "Mozilla"
+    }
+  }); // Thay đổi URL nếu cần
 
   // Xử lý khi kết nối được mở
   socket.addEventListener('open', (event) => {
