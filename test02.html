@@ -96,6 +96,8 @@
     receiveChannel.onclose = function (e) {
       console.log("Close");
       document.getElementById("txtStatus").textContent = "Trạng thái: Close";
+      txtAccept.value = "";
+      txtCreate.value = "";
     };
     remote.channel = receiveChannel;
   };
