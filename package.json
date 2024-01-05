@@ -4,8 +4,7 @@
     "ws": "^8.16.0"
   },
   "scripts": {
-    "start": "node server.js",
-    "start02": "node server-02.js"
+    "start": "node server.js"
   },
   "name": "webrtc",
   "version": "1.0.0",

@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title></title>
+  <title>Local</title>
 </head>
 
 <body>
@@ -40,7 +40,7 @@
   const txtCreate = document.getElementById("txtCreate");
 
   // WebSocket
-  const socket = new WebSocket('wss://localhost:6969'); // Thay đổi URL nếu cần
+  const socket = new WebSocket('ws://localhost:8080'); // Thay đổi URL nếu cần
 
   // Xử lý khi kết nối được mở
   socket.addEventListener('open', (event) => {
@@ -67,7 +67,15 @@
   });
 
   // WebRTC
-  const local = new RTCPeerConnection();
+  const iceConfiguration = {
+    iceServers: [
+      {
+        urls: ['stun:stun1.l.google.com:19302']
+      }
+    ]
+  };
+
+  const local = new RTCPeerConnection(iceConfiguration);
   local.onicecandidate = function (e) {
     const connStr = JSON.stringify(local.localDescription);
     console.log("PXH onicecandidate: ", connStr);
@@ -86,33 +94,22 @@
   dataChannel.onclose = function (e) {
     console.log("Close");
     document.getElementById("txtStatus").textContent = "Trạng thái: Close";
+    txtAccept.value = "";
   };
-
-  local.createOffer().then(function (o) {
-    console.log(local.setLocalDescription(o));
-    return local.setLocalDescription(o);
-  });
-
-  // Truyền data vào
-  // document.getElementById("txtAccept").addEventListener("change", (e) => {
-  //   if (txtAccept.value !== "") {
-  //     console.log("Có data");
-  //     local
-  //       .setRemoteDescription(JSON.parse(txtAccept.value))
-  //       .then(function () {
-  //         console.log("Done");
-  //       });
-  //   }
-  // });
 
   const interval = setInterval(() => {
 
-    // WS gửi xuống server
-    if (document.getElementById("txtStatus").textContent !== "Trạng thái: Open") {
-      if (socket.readyState === WebSocket.OPEN) {
-        socket.send(txtCreate.value);
+    local.createOffer().then(function (o) {
+      console.log(local.setLocalDescription(o));
+      return local.setLocalDescription(o);
+    }).then(function () {
+      // WS gửi xuống server
+      if (document.getElementById("txtStatus").textContent !== "Trạng thái: Open") {
+        if (socket.readyState === WebSocket.OPEN) {
+          socket.send(txtCreate.value);
+        }
       }
-    }
+    });
 
     if (txtAccept.value !== "") {
       local

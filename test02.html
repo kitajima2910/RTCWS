@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title></title>
+  <title>Remote</title>
 </head>
 
 <body>
@@ -40,7 +40,7 @@
   const txtCreate = document.getElementById("txtCreate");
 
   // WebSocket
-  const socket = new WebSocket('wss://gl-rtcws.glitch.me/'); // Thay đổi URL nếu cần
+  const socket = new WebSocket('ws://localhost:8080'); // Thay đổi URL nếu cần
 
   // Xử lý khi kết nối được mở
   socket.addEventListener('open', (event) => {
@@ -67,7 +67,15 @@
   });
 
   // WebRTC
-  const remote = new RTCPeerConnection();
+  const iceConfiguration = {
+    iceServers: [
+      {
+        urls: ['stun:stun1.l.google.com:19302']
+      }
+    ]
+  };
+
+  const remote = new RTCPeerConnection(iceConfiguration);
   remote.onicecandidate = function (e) {
     const connStr = JSON.stringify(remote.localDescription);
     console.log("PXH onicecandidate: ", JSON.stringify(connStr));
@@ -91,26 +99,6 @@
     remote.channel = receiveChannel;
   };
 
-  // Truyền data vào
-  // txtAccept.addEventListener("change", (e) => {
-  //   if (txtAccept.value !== "") {
-  //     console.log("Có data");
-  //     remote
-  //       .setRemoteDescription(JSON.parse(txtAccept.value))
-  //       .then(function () {
-  //         console.log("Done");
-  //         remote
-  //           .createAnswer()
-  //           .then(function (a) {
-  //             remote.setLocalDescription(a);
-  //           })
-  //           .then(function (a) {
-  //             console.log(JSON.stringify(remote.localDescription));
-  //           });
-  //       });
-  //   }
-  // });
-
   // Kiểm tra txtAccept có data chưa và xử lý
   setInterval(() => {
     if (txtAccept.value !== "") {
@@ -126,13 +114,13 @@
             })
             .then(function (a) {
               // console.log(JSON.stringify(remote.localDescription));
+              if (document.getElementById("txtStatus").textContent !== "Trạng thái: Open") {
+                if (socket.readyState === WebSocket.OPEN) {
+                  socket.send(txtCreate.value);
+                }
+              }
             });
         });
-    }
-
-    // WS gửi xuống server
-    if (txtCreate.value !== "") {
-      socket.send(txtCreate.value);
     }
 
   }, 1000);
