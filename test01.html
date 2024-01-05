@@ -41,6 +41,7 @@
 
   // WebSocket
   const socket = new WebSocket('ws://localhost:8080'); // Thay đổi URL nếu cần
+  // const socket = new WebSocket('wss://gl-rtcws.glitch.me'); // Thay đổi URL nếu cần
 
   // Xử lý khi kết nối được mở
   socket.addEventListener('open', (event) => {
@@ -135,6 +136,11 @@
       txtContent.value = "";
     }
   });
+
+  window.onload = function () {
+    document.getElementById('txtCreate').value = '';
+    document.getElementById('txtAccept').value = '';
+  };
 </script>
 
 </html>
