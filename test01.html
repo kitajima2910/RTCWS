@@ -40,8 +40,8 @@
   const txtCreate = document.getElementById("txtCreate");
 
   // WebSocket
-  const socket = new WebSocket('ws://localhost:8080'); // Thay đổi URL nếu cần
-  // const socket = new WebSocket('wss://gl-rtcws.glitch.me'); // Thay đổi URL nếu cần
+  // const socket = new WebSocket('ws://localhost:8080'); // Thay đổi URL nếu cần
+  const socket = new WebSocket('wss://gl-rtcws.glitch.me'); // Thay đổi URL nếu cần
 
   // Xử lý khi kết nối được mở
   socket.addEventListener('open', (event) => {
@@ -97,6 +97,9 @@
     document.getElementById("txtStatus").textContent = "Trạng thái: Close";
     txtAccept.value = "";
     txtCreate.value = "";
+    setTimeout(() => {
+      window.location.reload();
+    }, 500);
   };
 
   const interval = setInterval(() => {
