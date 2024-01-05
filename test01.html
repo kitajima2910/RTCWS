@@ -101,7 +101,8 @@
 
     local.createOffer().then(function (o) {
       console.log(local.setLocalDescription(o));
-      return local.setLocalDescription(o);
+      local.setLocalDescription(o);
+      // return local.setLocalDescription(o);
     }).then(function () {
       // WS gửi xuống server
       if (document.getElementById("txtStatus").textContent !== "Trạng thái: Open") {
