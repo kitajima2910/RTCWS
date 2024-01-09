@@ -14,9 +14,9 @@ wss.on('connection', (ws) => {
   // Hàm gửi tin nhắn liên tục từ server đến client
   const sendMessagesToClient = () => {
 
-    console.log("numberLocal: ", +numberLocal);
-    console.log("numberRemote: ", +numberRemote);
-    console.log(+numberLocal === +numberRemote);
+    // console.log("numberLocal: ", +numberLocal);
+    // console.log("numberRemote: ", +numberRemote);
+    // console.log(+numberLocal === +numberRemote);
 
     if(+numberLocal === +numberRemote) {
       if (dataLocal !== "") {
@@ -62,6 +62,8 @@ wss.on('connection', (ws) => {
     console.log('Client disconnected');
     dataLocal = "";
     dataRemote = "";
+    numberLocal = 1;
+    numberRemote = 2;
   });
 
   const isJSONString = (str) => {
