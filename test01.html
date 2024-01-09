@@ -8,6 +8,8 @@
 </head>
 
 <body>
+  <div style="color: blue;">Xác thực: <span id="txtNumber">00000</span></div>
+  <br>
   <div style="display: flex">
     <div style="margin-right: 100px;">
       <textarea name="txtContent" id="txtContent" cols="30" rows="10"></textarea>
@@ -31,13 +33,15 @@
       <textarea name="txtAccept" id="txtAccept" cols="30" rows="3" disabled></textarea>
     </div>
   </div>
-  <span id="txtStatus">Trạng thái: Waiting</span>
+  <span id="txtStatus" style="color: red;">Trạng thái: Waiting</span>
 </body>
 <script>
   // Khai báo các biến
   const txtContent = document.getElementById("txtContent");
   const txtAccept = document.getElementById("txtAccept");
   const txtCreate = document.getElementById("txtCreate");
+
+  const number = Math.floor(Math.random() * 90000) + 10000;
 
   // WebSocket
   // const socket = new WebSocket('ws://localhost:8080'); // Thay đổi URL nếu cần
@@ -47,6 +51,9 @@
   socket.addEventListener('open', (event) => {
     console.log('WebSocket connection opened');
     socket.send("Local connected");
+
+    document.getElementById("txtNumber").textContent = number;
+    socket.send(JSON.stringify({ verify: "XTLocal", numberLocal: number })); // Gửi số xuống server
   });
 
   // Xử lý khi nhận được dữ liệu từ máy chủ
@@ -71,29 +78,9 @@
   const iceConfiguration = {
     iceServers: [
       {
-        urls: "stun:stun.relay.metered.ca:80",
-      },
-      {
-        urls: "turn:standard.relay.metered.ca:80",
-        username: "0a475c69b3ccb72778bc2ebd",
-        credential: "/Vrai1X2jIxdxMJ8",
-      },
-      {
-        urls: "turn:standard.relay.metered.ca:80?transport=tcp",
-        username: "0a475c69b3ccb72778bc2ebd",
-        credential: "/Vrai1X2jIxdxMJ8",
-      },
-      {
-        urls: "turn:standard.relay.metered.ca:443",
-        username: "0a475c69b3ccb72778bc2ebd",
-        credential: "/Vrai1X2jIxdxMJ8",
-      },
-      {
-        urls: "turn:standard.relay.metered.ca:443?transport=tcp",
-        username: "0a475c69b3ccb72778bc2ebd",
-        credential: "/Vrai1X2jIxdxMJ8",
-      },
-    ],
+        urls: ['stun:stun1.l.google.com:19302']
+      }
+    ]
   };
 
   const local = new RTCPeerConnection(iceConfiguration);
@@ -147,6 +134,13 @@
           }
         });
     }
+
+     // Gửi số xuống server
+    if (document.getElementById("txtStatus").textContent !== "Trạng thái: Open") {
+        if (socket.readyState === WebSocket.OPEN) {
+          socket.send(JSON.stringify({ verify: "XTLocal", numberLocal: number }));
+        }
+      }
 
   }, 1000);
 
